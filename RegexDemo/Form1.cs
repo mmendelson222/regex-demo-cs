@@ -1,24 +1,22 @@
-﻿using System;
+﻿using Synteractive.Utils;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Linq;
 using System.Text;
-using System.Windows.Forms;
 using System.Text.RegularExpressions;
-using Synteractive.Utils;
+using System.Windows.Forms;
 
 namespace RegexDemo
 {
-    public partial class RegexTestForm : Form
+    public partial class Form1 : Form
     {
-        const string XML_FILE_NAME = "regex2.xml";
-
-        public RegexTestForm()
+        public Form1()
         {
             InitializeComponent();
         }
-
 
         protected override void OnLoad(EventArgs e)
         {
@@ -33,14 +31,30 @@ namespace RegexDemo
             base.OnClosing(e);
         }
 
-        private void regexCheck_Click(object sender, System.EventArgs e)
+        private void btnTest_Click(object sender, EventArgs e)
         {
             RunProcess();
         }
 
-        private void TextBox_TextChanged(object sender, EventArgs e)
+        private void txtPattern_TextChanged(object sender, EventArgs e)
         {
             if (chkAsYouType.Checked) RunProcess();
+        }
+
+        private void rad_CheckedChanged(object sender, EventArgs e)
+        {
+            RadioButton cb = (RadioButton)sender;
+            if (cb.Checked)
+                //if moving TO this button, load it. 
+                XmlLoad(cb.Text);
+            else
+                //if moving away from this button, save the info.
+                XmlSave(cb.Text);
+        }
+
+        private void chkRealTime_CheckedChanged(object sender, EventArgs e)
+        {
+            RunProcess();
         }
 
         private void RunProcess()
@@ -99,18 +113,11 @@ namespace RegexDemo
                 this.txtResults.Text = f.ToString(this.txtPattern.Text);
         }
 
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        static void Main()
-        {
-            Application.Run(new RegexTestForm());
-        }
+    
 
+        #region config stuff
+        const string XML_FILE_NAME = "regex2.xml";
         XmlConfig config = null;
-
-
         private void GetXmlConfig()
         {
             try
@@ -157,22 +164,9 @@ namespace RegexDemo
             cs.Text = this.txtText.Text;
             cs.Name = csName;
             XmlUtils.SerializeObject(config, XML_FILE_NAME);
-        }
+        } 
+        #endregion
 
-        private void rad_CheckedChanged(object sender, EventArgs e)
-        {
-            RadioButton cb = (RadioButton)sender;
-            if (cb.Checked)
-                //if moving TO this button, load it. 
-                XmlLoad(cb.Text);
-            else
-                //if moving away from this button, save the info.
-                XmlSave(cb.Text);
-        }
 
-        private void chkAsYouType_CheckedChanged(object sender, EventArgs e)
-        {
-            RunProcess();
-        }
     }
 }
